@@ -1,1 +1,17 @@
-[{"title":"Test Title","text":"Test text"},{"title":"Linus List","text":"Drink Water"},{"title":"Dogs","text":"but cats tho"},{"title":"Cats","text":"instead"}]
+[
+    {
+        "title": "Test Title",
+        "text": "Test text",
+        "id": 1
+    },
+    {
+        "title": "Dogs",
+        "text": "cats",
+        "id": 2
+    },
+    {
+        "title": "hi",
+        "text": "hi",
+        "id": 3
+    }
+]

@@ -17,12 +17,18 @@ module.exports = function (app) {
 
     // /api/notes receives new note to save on the req body, adds to db.json file, returns new note to client
     app.post("/api/notes", function (req, res) {
-        //receive new note from req body, save it in variable
-        let giveBack = req.body
+
         fs.readFile("./db/db.json", "utf8", (err, response) => {
             if (err) throw err;
             // parse response into json and save to allNotes
             let allNotes = JSON.parse(response);
+            let lastNoteID = allNotes[allNotes.length - 1].id;
+            lastNoteID += 1;
+            console.log(lastNoteID);
+            //receive new note from req body, save it in variable
+            
+            let giveBack = { ...req.body, id: lastNoteID }
+            console.log(giveBack);
             // console.log(allNotes);
             // now allNotes becomes itself plus the new note
             allNotes = [...allNotes, giveBack]
@@ -35,20 +41,8 @@ module.exports = function (app) {
 
             })
         })
-        //return new note to client
+
     });
-    //example from Starwars 12 activity: 
-
-    // Create New Characters - takes in JSON input
-    // app.post("/api/characters", function (req, res) {
-    //     var newCharacter = req.body;
-
-    //     console.log(newCharacter);
-
-    //     characters.push(newCharacter);
-
-    //     res.json(newCharacter);
-    // });
 
     //"/api/notes/:id" receives query parameter contining unique id of saved note. Reads all notes from db.json file, removes note with id property, rewrites notes to db.json
     app.delete("/api/notes/:id", function (req, res) {
