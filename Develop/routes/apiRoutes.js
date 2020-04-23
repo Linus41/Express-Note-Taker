@@ -20,13 +20,14 @@ module.exports = function (app) {
 
         fs.readFile("./db/db.json", "utf8", (err, response) => {
             if (err) throw err;
+            console.log("req body", req.body);
             // parse response into json and save to allNotes
             let allNotes = JSON.parse(response);
             let lastNoteID = allNotes[allNotes.length - 1].id;
             lastNoteID += 1;
             console.log(lastNoteID);
             //receive new note from req body, save it in variable
-            
+
             let giveBack = { ...req.body, id: lastNoteID }
             console.log(giveBack);
             // console.log(allNotes);
@@ -44,10 +45,31 @@ module.exports = function (app) {
 
     });
 
-    //"/api/notes/:id" receives query parameter contining unique id of saved note. Reads all notes from db.json file, removes note with id property, rewrites notes to db.json
+    //"/api/notes/:id" receives query parameter containing unique id of saved note. Reads all notes from db.json file, removes note with id property, rewrites notes to db.json
+
     app.delete("/api/notes/:id", function (req, res) {
-        res.sendFile(path.join(__dirname, "../db/db.json"));
+
+        //create variable saving query parameter that contains unique note id
+        var currentNoteID = req.params.id;
+        console.log("note to be deleted", currentNoteID);
+
+        // read all notes from db.json file
+        fs.readFile("./db/db.json", "utf8", (err, response) => {
+            if (err) throw err;
+            // take response and make into array of key value pair objects
+            let allNotes = JSON.parse(response);
+            
+            // remove note with id property
+            const filterNotes = allNotes.filter(note => note.id != currentNoteID);
+    
+            // rewrite notes to db.json
+            // stringify json to write to file
+            fs.writeFile("./db/db.json", JSON.stringify(filterNotes), err => {
+                if (err) throw err;
+                res.json(filterNotes);
+                console.log("Note " + currentNoteID + " was deleted");
+            })
+        });
+
     });
-
-
 }
